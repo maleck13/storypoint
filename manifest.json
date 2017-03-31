@@ -1,0 +1,19 @@
+{
+    "dependencies": {
+        "github.com/gorilla/mux": {
+            "version": "v1.3.0"
+        },
+        "github.com/gorilla/websocket": {
+            "version": "v1.1.0"
+        },
+        "github.com/pkg/errors": {
+            "version": ">=0.8.0, <1.0.0"
+        },
+        "github.com/rs/cors": {
+            "version": "v1.0"
+        },
+        "github.com/urfave/negroni": {
+            "version": "v0.2.0"
+        }
+    }
+}
