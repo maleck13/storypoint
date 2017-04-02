@@ -1,0 +1,141 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {},
+    "objects": [{
+        "kind": "Route",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "storypoint",
+            "creationTimestamp": null,
+            "labels": {
+                "name": "storypoint"
+            },
+            "annotations": {
+                "openshift.io/host.generated": "true"
+            }
+        },
+        "spec": {
+            "host": "",
+            "to": {
+                "kind": "Service",
+                "name": "storypoints"
+            },
+            "port":{
+                "targetPort":"web"
+            }
+        },
+        "status": {}
+    },{
+        "kind": "Route",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "storypoint-api",
+            "creationTimestamp": null,
+            "labels": {
+                "name": "storypoint"
+            },
+            "annotations": {
+                "openshift.io/host.generated": "true"
+            }
+        },
+        "spec": {
+            "host": "",
+            "to": {
+                "kind": "Service",
+                "name": "storypoints"
+            },
+            "port":{
+                "targetPort": 3000
+            }
+        },
+        "status": {}
+    }, {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+            "creationTimestamp": null,
+            "generation": 1,
+            "labels": {
+                "run": "storypoints"
+            },
+            "name": "storypoints"
+        },
+        "spec": {
+            "ports": [{
+                "name":"api",
+                "port": 3000,
+                "targetPort": 3000
+            },{
+                "name":"web",
+                "port": 8100,
+                "targetPort": 8100
+            }],
+            "selector": {
+                "name": "storypoints"
+            }
+        }
+    }, {
+        "apiVersion": "v1",
+        "kind": "DeploymentConfig",
+        "metadata": {
+            "creationTimestamp": null,
+            "generation": 1,
+            "labels": {
+                "run": "storypoints",
+                "name": "storypoints"
+            },
+            "name": "storypoints"
+        },
+        "spec": {
+            "replicas": 1,
+            "selector": {
+                "run": "storypoints"
+            },
+            "strategy": {
+                "resources": {},
+                "rollingParams": {
+                    "intervalSeconds": 1,
+                    "maxSurge": "25%",
+                    "maxUnavailable": "25%",
+                    "timeoutSeconds": 600,
+                    "updatePeriodSeconds": 1
+                },
+                "type": "Rolling"
+            },
+            "template": {
+                "metadata": {
+                    "creationTimestamp": null,
+                    "labels": {
+                        "run": "storypoints"
+                    }
+                },
+                "spec": {
+                    "containers": [{
+                        "image": "maleck13/storypoints-server:latest",
+                        "imagePullPolicy": "Always",
+                        "name": "storypoints-server",
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log"
+                    },{
+                        "image": "maleck13/storypoints-web:latest",
+                        "imagePullPolicy": "Always",
+                        "name": "storypoints-web",
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log"
+                    }],
+                    "dnsPolicy": "ClusterFirst",
+                    "restartPolicy": "Always",
+                    "securityContext": {},
+                    "terminationGracePeriodSeconds": 30
+                }
+            },
+            "test": false,
+            "triggers": [{
+                "type": "ConfigChange"
+            }]
+        },
+        "status": {
+        }
+    }]
+}

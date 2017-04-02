@@ -31,5 +31,7 @@ func BuildHTTPHandler(r *mux.Router) http.Handler {
 
 // SessionRoute sets up the main session route
 func SessionRoute(r *mux.Router, sessionHandler SessionHandler) {
-	r.HandleFunc("/session", sessionHandler.Start)
+	r.HandleFunc("/session", sessionHandler.ID).Methods("GET")
+	r.HandleFunc("/session/{id}", sessionHandler.Session)
+	r.HandleFunc("/sessions/count", sessionHandler.Active).Methods("GET")
 }

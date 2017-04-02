@@ -1,0 +1,74 @@
+<div class="container" *ngIf="pointer.name">
+    <p class="text-center"> Welcome {{pointer.name}}</p>
+</div>  
+<div class="container well" *ngIf="pointer.name">
+    <input type="text" placeholder="Enter your story" class="form-control" />
+</div>  
+<div class="container" *ngIf="pointer.name">
+  <div class="col-xs-0 col-md-3">
+  </div>
+  <div class="col-xs-12 col-md-4">
+    <div class="container btn-group btn-group-md" role="group">
+      <button (click)="setScore('1')" class="btn btn-default" type="submit">&nbsp;1&nbsp;&nbsp; point</button>
+      <button (click)="setScore('2')" class="btn btn-default" type="submit">&nbsp;2 points</button>
+      <button (click)="setScore('3')" class="btn btn-default" type="submit">&nbsp;3&nbsp; points</button>
+    </div>
+    <div class="col-md-12 col-xs-12">
+    </div>  
+    <div class="col-md-12 col-xs-12">
+    </div>  
+    <div class="container btn-group btn-group-md" role="group">
+      <button (click)="setScore('5')" class="btn btn-default" type="submit">&nbsp;5 points</button>
+      <button (click)="setScore('8')" class="btn btn-default" type="submit">&nbsp;8 points</button>
+      <button (click)="setScore('13')" class="btn btn-default" type="submit">13 points</button>
+    </div>
+    <div class="col-md-12 col-xs-12">
+    </div>
+    <div class="col-md-12 col-xs-12">
+    </div>  
+    <div class="container btn-group btn-group-md" role="group">
+      <button (click)="setScore('21')" class="btn btn-default" type="submit">21 points</button>
+      <button (click)="setScore('33')" class="btn btn-default" type="submit">33 points</button>
+      <button (click)="setScore('?')" class="btn btn-default" type="submit">?&nbsp;dunno</button>
+    </div>
+  </div>
+  <div class="col-xs-12 col-md-5">
+    <div class="list-group">
+      <table class="table table-striped table-hover">
+        <thead><th>Story Pointer</th><th>Points</th></thead>
+        <tr *ngFor="let c of session.Pointers">
+          <td >{{c.name}}</td>
+          
+          <td *ngIf="session.Show">{{c.score}}</td>
+          <td *ngIf="! session.Show && c.score !='-'">✔</td>
+          <td *ngIf="! session.Show && c.score =='-'">{{c.score}}</td>
+        </tr>
+        <tr *ngIf="session.Show">
+          <td>Average</td>
+          <td>{{average}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><div class="pull-right btn-group btn-group-sm" role="group">
+         <button (click)="showPoints()" class="btn btn-primary" type="submit">Show</button>
+         <button (click)="clearPoints(true)" class="btn btn-warning" type="submit">Clear</button>
+       </div></td>
+        </tr>
+
+      </table>
+    </div>  
+  </div>
+</div>
+<div *ngIf="!pointer.name" class="col-md-12">
+  <div class="container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+  <form class="form">
+    <label for="name">Your Name:</label>
+    <input type="text" name="name" class="form-control" id="pointerName" required name="name"><br/>
+    <button type="button" class="btn btn-default pull-right" (click)="setName()">Join Session</button>
+  </form>
+  </div>
+  </div>
+</div>
+<div class="col-md-3"></div>

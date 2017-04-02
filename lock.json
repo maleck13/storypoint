@@ -1,6 +1,14 @@
 {
-    "memo": "1d5dbd4d9245499e50863a9bb1df3138dd654f83f640238bf0810082ea1e385b",
+    "memo": "64e92e6ad116975757f4d60a2d172957f18b3aa389951028ca54f9fffd7eb5be",
     "projects": [
+        {
+            "name": "github.com/Sirupsen/logrus",
+            "version": "v0.11.5",
+            "revision": "ba1b36c82c5e05c4f912a88eab0dcd91a171688f",
+            "packages": [
+                "."
+            ]
+        },
         {
             "name": "github.com/codegangsta/negroni",
             "version": "v0.2.0",
@@ -26,6 +34,14 @@
             ]
         },
         {
+            "name": "github.com/gorilla/websocket",
+            "version": "v1.1.0",
+            "revision": "3ab3a8b8831546bd18fd182c20687ca853b2bb13",
+            "packages": [
+                "."
+            ]
+        },
+        {
             "name": "github.com/rs/cors",
             "version": "v1.0",
             "revision": "a62a804a8a009876ca59105f7899938a1349f4b3",
@@ -42,11 +58,27 @@
             ]
         },
         {
+            "name": "github.com/satori/go.uuid",
+            "version": "v1.1.0",
+            "revision": "879c5887cd475cd7864858769793b2ceb0d44feb",
+            "packages": [
+                "."
+            ]
+        },
+        {
             "name": "golang.org/x/net",
             "branch": "master",
             "revision": "ffcf1bedda3b04ebb15a168a59800a73d6dc0f4d",
             "packages": [
                 "context"
+            ]
+        },
+        {
+            "name": "golang.org/x/sys",
+            "branch": "master",
+            "revision": "9a7256cb28ed514b4e1e5f68959914c4c28a92e0",
+            "packages": [
+                "unix"
             ]
         }
     ]
