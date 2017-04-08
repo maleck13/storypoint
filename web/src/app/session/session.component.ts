@@ -41,16 +41,19 @@ export class SessionComponent implements OnInit {
 
   averagePoints(){
     let total = 0;
+    let validScores = this.session.Pointers.length;
     for( let i=0; i < this.session.Pointers.length; i++){
       let p = this.session.Pointers[i];
-      if(p.score != "-"){
+      if(p.score != "-" && p.score != "?"){
         total+=parseInt(p.score)
         if (isNaN(total)){
           total = 0;
         }
+      }else{
+        validScores = validScores -1;
       }
     }
-    this.average = total / this.session.Pointers.length;
+    this.average = total / validScores;
     this.average = parseFloat(this.average.toFixed(2));
     
   }

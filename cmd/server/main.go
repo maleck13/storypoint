@@ -38,6 +38,11 @@ func main() {
 		sessionHandler := web.NewSessionHandler(logger, sesssionStore)
 		web.SessionRoute(router, sessionHandler)
 	}
+	//jira handler
+	{
+		jiraHandler := web.NewJiraHandler()
+		web.JiraRoute(router, jiraHandler)
+	}
 
 	httpHandler := web.BuildHTTPHandler(router)
 	if err := http.ListenAndServe(":3000", httpHandler); err != nil {

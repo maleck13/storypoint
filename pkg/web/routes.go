@@ -35,3 +35,8 @@ func SessionRoute(r *mux.Router, sessionHandler SessionHandler) {
 	r.HandleFunc("/session/{id}", sessionHandler.Session)
 	r.HandleFunc("/sessions/count", sessionHandler.Active).Methods("GET")
 }
+
+func JiraRoute(r *mux.Router, jiraHandler JiraHandler) {
+	r.HandleFunc("/jira/authenticate", jiraHandler.Authenticate).Methods("POST")
+	r.HandleFunc("/jira/{sessionID}/items", jiraHandler.IssueList).Methods("GET")
+}
