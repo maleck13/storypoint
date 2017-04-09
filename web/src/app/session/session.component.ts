@@ -45,10 +45,12 @@ export class SessionComponent implements OnInit {
     for( let i=0; i < this.session.Pointers.length; i++){
       let p = this.session.Pointers[i];
       if(p.score != "-" && p.score != "?"){
-        total+=parseInt(p.score)
-        if (isNaN(total)){
-          total = 0;
+        let s =parseInt(p.score)
+        if (isNaN(s)){
+          total+= 0;
+          return;
         }
+        total+=s;
       }else{
         validScores = validScores -1;
       }
