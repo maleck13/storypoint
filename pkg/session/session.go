@@ -1,6 +1,7 @@
 package session
 
 import (
+	"fmt"
 	"time"
 
 	"sync"
@@ -116,6 +117,7 @@ func (ps *PointingSession) Run() {
 	for {
 		select {
 		case m := <-ps.Leave:
+			fmt.Println("removing  member", m.Name)
 			ps.removePointer(m)
 			//needs to be async so as not to block the run loop
 			go ps.broadCastPoints()
@@ -124,6 +126,7 @@ func (ps *PointingSession) Run() {
 				select {
 				case member.send <- in:
 				default:
+					fmt.Println("error sending to member", member.Name)
 					//coulnd send to this member means nothing is reading from it so can remove
 					ps.removePointer(member)
 				}

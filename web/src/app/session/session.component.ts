@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SessionService, Pointer, Session } from '../session.service';
 import { ActivatedRoute } from '@angular/router'
 import { Subject } from 'rxjs/Subject';
+import {JiraService, JiraAuth, JiraSession} from '../jira.service'
 @Component({
   selector: 'app-session',
   templateUrl: './session.component.html',
@@ -10,13 +11,22 @@ import { Subject } from 'rxjs/Subject';
 })
 export class SessionComponent implements OnInit {
 
-  constructor(private sessionService: SessionService, private activeRoute: ActivatedRoute) { }
+  constructor(private sessionService: SessionService, private activeRoute: ActivatedRoute, private jiraService: JiraService) { }
 
   private sessionID: string
   private pointer: Pointer = new Pointer();
   private session: Session = new Session();
   private socket: Subject<any>;
-  private average: number = 0
+  private average: number = 0;
+  private jira = false;
+  private jiraLinked = false;
+  private jiraAuth = new JiraAuth();
+  private jiraSession = new JiraSession("","","");
+  private jiraQl : string
+  private jiraIssues : any[] = new Array();
+  private jiraIssuesOn = false;
+  private activeLink : string = "pointing";
+  private currentJira :any  = {"fields":{}};
 
   ngOnInit() {
     this.pointer.load()
@@ -28,7 +38,17 @@ export class SessionComponent implements OnInit {
       }).catch(err => {
         console.error(err);
       })
-
+      this.jiraSession.load()
+      .then(auth=>{
+        console.log("loaded jira auth ", auth);
+        if (auth){
+          this.jiraSession = auth;
+          this.jiraLinked = true;
+        }
+      })
+      .catch(err=>{
+        console.log(err);
+      });
   }
 
   setName() {
@@ -56,7 +76,7 @@ export class SessionComponent implements OnInit {
       }
     }
     this.average = total / validScores;
-    this.average = parseFloat(this.average.toFixed(2));
+    this.average = Math.round(parseFloat(this.average.toFixed(2)));
     
   }
 
@@ -69,11 +89,75 @@ export class SessionComponent implements OnInit {
     this.socket.forEach((response: MessageEvent): any => {
       this.handleMessageEvent(response.data)
     });
-    console.log("saving pointer");
     this.pointer.name = name;
     this.pointer.score = "-";
     this.session.Pointers.push(this.pointer)
     this.pointer.save();
+  }
+
+  showJiraLinkForm(){
+    this.jira = true;
+    this.jiraIssuesOn = false;
+    this.activeLink = "jira";
+  }
+
+  pointJiraIssue(id){
+    console.log("index",id);
+    if(this.jiraIssues[id]){
+      this.currentJira = this.jiraIssues[id];
+      this.socket.next({"event":"jira","issue":{"description":this.currentJira.fields.description,"summary":this.currentJira.fields.summary}});
+    }
+    this.jiraLinkCancel();
+  }
+
+  jiraLinkCancel(){
+    this.jira = false;
+    this.jiraIssuesOn=false;
+    this.jiraLinked = false;
+    this.activeLink = "pointing";
+  }
+
+  listJiraIssues(){
+    this.jiraIssuesOn = true;
+    this.activeLink = "issues";
+
+  }
+
+  jiraQuery(){
+    console.log("this jql ",this.jiraQl);
+    this.jiraSession.load()
+    .then(auth=>{
+       this.jiraService.list(auth,this.sessionID,this.jiraQl)
+       .then(resp=>{
+          this.jiraIssues = resp.issues;
+       })
+    })
+    .catch(err=>{
+      console.log("error listing",err);
+      this.jiraSession.del();
+      this.jiraLinked = false;
+    })
+  }
+
+  jiraLink(){
+    console.log("jiraLink")
+    this.jiraService.authenticate(this.jiraAuth)
+    .then((auth)=>{
+      auth.save()
+      .then(()=>{
+        this.jira = false;
+        this.jiraLinked = true;
+        this.jiraIssuesOn = true;
+        this.activeLink = "issues";
+      });      
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
+
+  jiraSave(){
+    console.log(this.average);
   }
 
   handleMessageEvent(event: any) {
@@ -103,6 +187,12 @@ export class SessionComponent implements OnInit {
         return;
     }else if (e.event === "clear"){
        return this.clearPoints(false);
+    }else if (e.event === "jira"){
+        this.currentJira.fields["description"] = e.issue.description;
+        this.currentJira.fields["summary"] = e.issue.summary;
+        this.jiraLinkCancel();
+    }else{
+      console.log("missed event ", e);
     }
   }
 

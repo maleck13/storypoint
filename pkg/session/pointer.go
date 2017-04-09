@@ -15,7 +15,7 @@ import (
 
 const (
 	// Time allowed to write a message to the peer.
-	 writeWait = 8 * time.Second
+	writeWait = 8 * time.Second
 
 	// Time allowed to read the next pong message from the peer.
 	pongWait = 50 * time.Second
@@ -24,7 +24,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 512
+	maxMessageSize = 1024
 )
 
 // Pointer represents a user who is in a  PointingSession
@@ -71,6 +71,7 @@ func (p *Pointer) Write(w *sync.WaitGroup) {
 	for {
 		select {
 		case message, ok := <-p.send:
+			fmt.Println("message ", string(message))
 			p.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				p.conn.WriteMessage(websocket.CloseMessage, []byte{})
@@ -83,6 +84,7 @@ func (p *Pointer) Write(w *sync.WaitGroup) {
 			// when it ticks write the ping to the client socket. If it fails return so the the connection is closed
 			p.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := p.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
+				fmt.Println("error writing ping ", err)
 				return
 			}
 		}
@@ -109,6 +111,7 @@ func (p *Pointer) Read(w *sync.WaitGroup) {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("unexpected close error: %v", err)
 			}
+			log.Printf("unexpected error: %v", err)
 			p.pointingSession.Leave <- p
 			break
 		}

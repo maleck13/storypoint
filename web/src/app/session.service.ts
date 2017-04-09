@@ -57,8 +57,11 @@ export class SessionService {
 
     let observer = {
       next: (data: Object) => {
+        console.log(this.ws.readyState);
         if (this.ws.readyState === WebSocket.OPEN) {
           this.ws.send(JSON.stringify(data));
+        }else{
+          console.log("not sending data on socket")
         }
       }
     };
