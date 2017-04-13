@@ -24,7 +24,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 1024
+	maxMessageSize = 1024 * 50 // 50KB
 )
 
 // Pointer represents a user who is in a  PointingSession
@@ -71,7 +71,6 @@ func (p *Pointer) Write(w *sync.WaitGroup) {
 	for {
 		select {
 		case message, ok := <-p.send:
-			fmt.Println("message ", string(message))
 			p.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				p.conn.WriteMessage(websocket.CloseMessage, []byte{})

@@ -1,6 +1,10 @@
 <div class="container" *ngIf="pointer.name">
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade in" role="alert"> 
+    <strong>Error: </strong> {{error}} 
+    <button *ngIf="errorOption" type="button" class="btn btn-default">{{errorOption}}</button>
+  </div>
   <div class="col-md-7">
-    <p class="text-right"> Welcome {{pointer.name}}</p>
+    <p class="text-right"> Welcome {{pointer.name}}  <a href="#" (click)="clearPointer($event)" > [clear]</a></p> 
   </div>
 </div>
 <div class="container well" *ngIf="pointer.name && !jira">
@@ -65,7 +69,7 @@
           <td>
               <div *ngIf="currentJira.fields.summary && session.Show" class="pull-left btn-group btn-group-sm" role="group">
               <button (click)="jiraSave()" class="btn pull-left btn-primary" type="submit">Set Points</button>
-              <input type="text" [(ngModel)]="average" value="{{average}}" style="width: 30px; margin-left:10px;" />
+              <input type="text" [(ngModel)]="choice" value="{{average}}" style="width: 30px; margin-left:10px;" />
               </div>  
           </td>
           <td>
@@ -96,7 +100,13 @@
   <div class="container well">
     <div class="panel panel-default">
       <!-- Default panel contents -->
-      <div class="panel-heading">Jiras</div>
+      <div *ngIf="jiraIssues.length > 0" class="panel-heading">Jiras <button (click)="clearLoadedJiras()" class="btn btn-sm btn-primary pull-right">clear</button></div>
+      <div *ngIf="jiraIssues.length == 0" class="panel-heading">Recent Queries</div>
+      <div *ngIf="jiraIssues.length == 0" class="list-group">
+
+         <button  *ngFor="let ji of recentQueries;  let i = index" (click)="populateQuery(i)" type="button" class="list-group-item">{{ji}}</button>
+      
+      </div>
       <!-- List group -->
       <div class="list-group">
          <button  *ngFor="let ji of jiraIssues;  let i = index" (click)="pointJiraIssue(i)" type="button" class="list-group-item">{{ji.fields.summary}}</button>
@@ -106,7 +116,7 @@
 </div>
 <div *ngIf="pointer.name && jira" class="col-md-12">
   <div class="container">
-    <form class="form well">
+    <!--<form class="form well">
       <h4 class="text-center">Link with sesion token </h4>
       <label for="host">Jira Host:</label>
       <input type="text" name="host" class="form-control" id="host" [(ngModel)]="jiraAuth.host">
@@ -118,10 +128,10 @@
       </div>
       <br/>
       <br/>
-    </form>
+    </form>-->
     <form class="form well">
       <h4 class="text-center">Link with credentials </h4>
-      <p>Note the username and password, are never stored. They are only used to generate a session token.</p>
+      <p>Note the username and password are never stored. They are only used to generate a session token.</p>
       <label for="host">Jira Host:</label>
       <input type="text" name="host" placeholder="Jira host" class="form-control" id="host" [(ngModel)]="jiraAuth.host">
       <label for="user">Jira Username:</label>

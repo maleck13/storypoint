@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -49,6 +50,9 @@ func (c Client) Authenticate(host, user, pass string) (*Auth, error) {
 		return nil, errors.Wrap(err, "failed to do authentication request")
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusUnauthorized {
+		return nil, ErrAuth{Message: "failed to authenticate "}
+	}
 	if resp.StatusCode != 200 {
 		return nil, errors.New("failed to authenticate : " + resp.Status)
 	}
@@ -57,6 +61,56 @@ func (c Client) Authenticate(host, user, pass string) (*Auth, error) {
 		return nil, errors.Wrap(err, "failed to decode auth response from jira ")
 	}
 	return authRes, nil
+}
+
+func (c Client) UpdateSP(token, jiraID string, points int64) error {
+
+	//find the customFieldId for the Story Points field
+	jiraFields, err := c.EditableFields(token, jiraID)
+	if err != nil {
+		return errors.Wrap(err, "failed to get edititable fields at UpdateSP ")
+	}
+	var fieldKey string
+	for k, v := range jiraFields {
+		if v.Name == "Story Points" {
+			fieldKey = k
+			break
+		}
+	}
+	if fieldKey == "" {
+		return errors.New("did not find a Story Points field")
+	}
+	update := map[string]map[string]int64{
+		"fields": {
+			fieldKey: points,
+		},
+	}
+	jbytes, err := json.Marshal(update)
+	fmt.Println("update body", string(jbytes))
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal update in UpdateSP")
+	}
+	updateURL, err := url.Parse(c.Host + "/rest/api/2/issue/" + jiraID)
+	if err != nil {
+		return errors.Wrap(err, "failed to parse update url at UpdateSP")
+	}
+	req, err := http.NewRequest("PUT", updateURL.String(), bytes.NewReader(jbytes))
+	if err != nil {
+		return errors.Wrap(err, "failed to create the update request")
+	}
+	req.AddCookie(&http.Cookie{Name: "JSESSIONID", Value: token})
+	req.Header.Add("content-type", "application/json")
+	httpClient := http.Client{}
+	httpClient.Timeout = time.Second * 20
+	res, err := httpClient.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "failed making update request")
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusNoContent {
+		return errors.New("unexpected response from jira " + res.Status)
+	}
+	return nil
 }
 
 type ErrAuth struct {
@@ -68,8 +122,45 @@ func (e ErrAuth) Error() string {
 }
 
 func IsErrAuth(err error) bool {
+	if nil == err {
+		return false
+	}
 	_, ok := err.(ErrAuth)
 	return ok
+}
+
+type field struct {
+	Required   bool     `json:"required"`
+	Name       string   `json:"name"`
+	Operations []string `json:"operations"`
+}
+
+func (c Client) EditableFields(token, id string) (map[string]*field, error) {
+	searchURL, err := url.Parse(c.Host + "/rest/api/2/issue/" + id + "/editmeta")
+	req, err := http.NewRequest("GET", searchURL.String(), nil)
+	if err != nil {
+		return nil, errors.Wrap(err, " failed to create Jira search request")
+	}
+	req.AddCookie(&http.Cookie{Name: "JSESSIONID", Value: token})
+	client := http.Client{}
+	client.Timeout = time.Second * 30
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to do Jira search query")
+	}
+	if resp.StatusCode == http.StatusUnauthorized {
+		return nil, ErrAuth{Message: "recieved 401 from Jira"}
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to read response body from Jira")
+	}
+	respMap := map[string]map[string]*field{}
+	if err := json.Unmarshal(body, &respMap); err != nil {
+		return nil, errors.Wrap(err, "failed to Unmarshal response body at EditableFields ")
+	}
+	return respMap["fields"], nil
 }
 
 func (c Client) Filter(token, query string) (*IssueList, error) {

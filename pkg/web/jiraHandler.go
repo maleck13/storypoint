@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"strconv"
+
 	"github.com/maleck13/storypoint/pkg/jira"
 )
 
@@ -69,8 +71,12 @@ func (jh JiraHandler) Authenticate(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	authRes, err := client.Authenticate(auth.Host, auth.User, auth.Pass)
+	if jira.IsErrAuth(err) {
+		http.Error(rw, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	if err != nil {
-		http.Error(rw, "failed to authenticate "+err.Error(), http.StatusUnauthorized)
+		http.Error(rw, "unexpected error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	if err := encoder.Encode(authRes.Session); err != nil {
@@ -78,6 +84,36 @@ func (jh JiraHandler) Authenticate(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	return
+}
+
+type jiraUpdate struct {
+	Host   string `json:"host"`
+	JiraID string `json:"jiraID"`
+	Points string `json:"points"`
+}
+
+func (jh JiraHandler) IssueUpdate(rw http.ResponseWriter, req *http.Request) {
+	var (
+		update  = &jiraUpdate{}
+		decoder = json.NewDecoder(req.Body)
+		client  = jira.Client{}
+		auth    = req.Header.Get("X-Jira-Auth")
+	)
+	if err := decoder.Decode(update); err != nil {
+		http.Error(rw, "failed to decode update "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	client.Host = update.Host
+	p, err := strconv.ParseInt(update.Points, 10, 16)
+	if err != nil {
+		http.Error(rw, "failed to parse points "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err := client.UpdateSP(auth, update.JiraID, p); err != nil {
+		http.Error(rw, "unexpected error updating storypoints "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rw.WriteHeader(http.StatusNoContent)
 }
 
 func NewJiraHandler() JiraHandler {
