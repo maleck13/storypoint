@@ -1,3 +1,7 @@
+/**
+ * Note this is currently handling too much. The jira stuff should be split out into
+ * its own component and prob use some observabales to manage state
+ */
 import { Component, OnInit } from '@angular/core';
 import { SessionService, Pointer, Session } from '../session.service';
 import { ActivatedRoute } from '@angular/router'
