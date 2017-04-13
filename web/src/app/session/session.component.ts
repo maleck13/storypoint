@@ -121,6 +121,7 @@ export class SessionComponent implements OnInit {
   clearLoadedJiras(){
     this.jiraIssues = new Array();
     this.jiraIssuesOn = true;
+    this.jiraLinked = true;
     this.jiraService.loadQueries()
     .then((res)=>{
       if(res){
@@ -167,6 +168,7 @@ export class SessionComponent implements OnInit {
     this.jira = false;
     this.jiraIssuesOn = false;
     this.jiraLinked = false;
+    this.sessionService.disconnect();
     return false;
   }
 
@@ -194,6 +196,7 @@ export class SessionComponent implements OnInit {
   populateQuery(index ){
     if(this.recentQueries[index]){
       this.jiraQl = this.recentQueries[index];
+      this.jiraLinked = true;
     }
   }
 
@@ -240,6 +243,7 @@ export class SessionComponent implements OnInit {
   handleMessageEvent(event: any) {
     let e = JSON.parse(event);
     if (e.event === "pointers") {
+      console.log("pointers",e.points);
       this.session.Pointers = []
       for (let i = 0; i < e.points.length; i++) {
         let p = new Pointer();
