@@ -176,6 +176,10 @@ export class SessionComponent implements OnInit {
     console.log("this jql ", this.jiraQl);
     this.jiraSession.load()
       .then(auth => {
+        if(! auth){
+          this.error = "failed to load session data. You may need to login to jira again";
+          return
+        }
         this.jiraService.list(auth, this.sessionID, this.jiraQl)
           .then(resp => {
             this.jiraIssues = resp.issues;
