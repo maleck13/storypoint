@@ -10,6 +10,7 @@ import { routing } from './app.routes';
 import { HomeComponent } from './home/home.component';
 import { SessionComponent } from './session/session.component';
 import {SessionService} from './session.service';
+import {JiraService} from './jira.service';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import {SessionService} from './session.service';
     routing
   ],
   providers: [
-    SessionService
+    SessionService,
+    JiraService
   ],
   bootstrap: [AppComponent]
 })

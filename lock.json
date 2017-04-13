@@ -1,5 +1,5 @@
 {
-    "memo": "64e92e6ad116975757f4d60a2d172957f18b3aa389951028ca54f9fffd7eb5be",
+    "memo": "bb5c8ca753cc15a5e8239e517b6b98d9abbad32d341fcb9f56cd90b46686d705",
     "projects": [
         {
             "name": "github.com/Sirupsen/logrus",
@@ -42,17 +42,9 @@
             ]
         },
         {
-            "name": "github.com/rs/cors",
-            "version": "v1.0",
-            "revision": "a62a804a8a009876ca59105f7899938a1349f4b3",
-            "packages": [
-                "."
-            ]
-        },
-        {
-            "name": "github.com/rs/xhandler",
-            "version": "v1.0",
-            "revision": "d9d9599b6aaf6a058cb7b1f48291ded2cbd13390",
+            "name": "github.com/pkg/errors",
+            "version": "v0.8.0",
+            "revision": "645ef00459ed84a119197bfb8d8205042c6df63d",
             "packages": [
                 "."
             ]
@@ -63,14 +55,6 @@
             "revision": "879c5887cd475cd7864858769793b2ceb0d44feb",
             "packages": [
                 "."
-            ]
-        },
-        {
-            "name": "golang.org/x/net",
-            "branch": "master",
-            "revision": "ffcf1bedda3b04ebb15a168a59800a73d6dc0f4d",
-            "packages": [
-                "context"
             ]
         },
         {
