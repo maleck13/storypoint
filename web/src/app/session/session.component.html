@@ -3,6 +3,9 @@
     <strong>Error: </strong> {{error}} 
     <button *ngIf="errorOption" type="button" class="btn btn-default">{{errorOption}}</button>
   </div>
+  <div *ngIf="success" class="alert alert-success alert-dismissible fade in" role="alert"> 
+    <strong>Success: </strong> {{success}} 
+  </div>
   <div class="col-md-7">
     <p class="text-right"> Welcome {{pointer.name}}  <a href="#" (click)="clearPointer($event)" > [clear]</a></p> 
   </div>

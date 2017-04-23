@@ -45,7 +45,8 @@ func main() {
 	}
 
 	httpHandler := web.BuildHTTPHandler(router)
-	if err := http.ListenAndServe(":3000", httpHandler); err != nil {
+	log.Println("starting api on 8080")
+	if err := http.ListenAndServe(":8080", httpHandler); err != nil {
 		log.Fatal(err)
 	}
 }
