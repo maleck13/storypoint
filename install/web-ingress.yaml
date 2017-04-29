@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: storypoint-web-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls: # specify domains to fetch certificates for
+  - hosts:
+    - storypoint.me
+    - api.storypoint.me
+    secretName: storypoints-tls
+  rules:
+  - host: storypoint.me
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: storypoints
+          servicePort: web
+  - host: api.storypoint.me
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: storypoints
+          servicePort: api          

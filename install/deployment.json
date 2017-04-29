@@ -1,0 +1,49 @@
+{
+  "apiVersion": "apps/v1beta1",
+  "kind": "Deployment",
+  "metadata": {
+    "creationTimestamp": null,
+    "generation": 1,
+    "labels": {
+      "run": "storypoints",
+      "name": "storypoints"
+    },
+    "name": "storypoints"
+  },
+  "spec": {
+    "replicas": 1,
+    "template": {
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "run": "storypoints",
+          "name":"storypoints"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "image": "maleck13/storypoints-server:1.0.0",
+            "imagePullPolicy": "Always",
+            "name": "storypoints-server",
+            "resources": {},
+            "terminationMessagePath": "/dev/termination-log"
+          },
+          {
+            "image": "maleck13/storypoints-web:1.0.2",
+            "imagePullPolicy": "Always",
+            "name": "storypoints-web",
+            "resources": {},
+            "terminationMessagePath": "/dev/termination-log",
+            "command":["/usr/src/app/files"],
+            "args":["-d","/usr/src/app/dist","-p=8100"]
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "restartPolicy": "Always",
+        "securityContext": {},
+        "terminationGracePeriodSeconds": 30
+      }
+    }
+  }
+}
