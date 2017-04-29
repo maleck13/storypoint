@@ -37,12 +37,12 @@ type Pointer struct {
 }
 
 // NewPointer returns a new Pointer user
-func NewPointer(conn *websocket.Conn, pointinSession *PointingSession, name string) *Pointer {
+func NewPointer(conn *websocket.Conn, pointingSession *PointingSession, name string) *Pointer {
 	return &Pointer{
 		conn: conn,
 		send: make(chan []byte),
 		// the pointer has knows about the pointing session this is to BroadCast to everyone in that session
-		pointingSession: pointinSession,
+		pointingSession: pointingSession,
 		Name:            name,
 	}
 }
@@ -58,7 +58,7 @@ type errorMessage struct {
 	Message string `json:"message"`
 }
 
-// Write reades messages sent to the pointer from other pointers and writes to the websocket
+// Write reads messages sent to the pointer from other pointers and writes to the websocket
 func (p *Pointer) Write(w *sync.WaitGroup) {
 	// tick and check everything ok with the pointer once every ~40 seconds
 	ticker := time.NewTicker(pingPeriod)
