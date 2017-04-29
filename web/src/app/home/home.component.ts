@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class HomeComponent implements OnInit {
 
   private session: Session = new Session();
-  private pointer: Pointer = new Pointer();
+  public pointer: Pointer = new Pointer();
 
   constructor(private sessionService: SessionService, private router: Router) {
 

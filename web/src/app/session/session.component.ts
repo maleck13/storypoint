@@ -18,22 +18,23 @@ export class SessionComponent implements OnInit {
   constructor(private sessionService: SessionService, private activeRoute: ActivatedRoute, private jiraService: JiraService) { }
 
   private sessionID: string
-  private pointer: Pointer = new Pointer();
+  public pointer: Pointer = new Pointer();
   private session: Session = new Session();
   private socket: Subject<any>;
   private average: number = 0;
   private choice: number = 0;
-  private jira = false;
+  public jira = false;
   private jiraLinked = false;
   private jiraAuth = new JiraAuth();
   private jiraSession = new JiraSession("", "", "");
   private jiraQl: string
   private jiraIssues: any[] = new Array();
-  private jiraIssuesOn = false;
+  public jiraIssuesOn = false;
   private activeLink: string = "pointing";
   private currentJira: any = { "index": 0, "fields": {} };
   private error: string
-  private recentQueries :string[] = new Array()
+  private recentQueries: string[] = new Array()
+  private success = null;
 
   ngOnInit() {
     this.error = undefined;
@@ -44,14 +45,14 @@ export class SessionComponent implements OnInit {
           this.connect(name);
         }
       }).catch(err => {
-        if(err){
-          this.error = "failed to connect by websocket " + err.message 
+        if (err) {
+          this.error = "failed to connect by websocket " + err.message
         }
       })
     this.jiraService.loadQueries()
-    .then((q)=>{
-      this.recentQueries = q;
-    })  
+      .then((q) => {
+        this.recentQueries = q;
+      })
     this.jiraAuth.load()
       .then(jauth => {
         if (jauth) {
@@ -70,7 +71,7 @@ export class SessionComponent implements OnInit {
         }
       })
       .catch(err => {
-        console.error("error loading jiraSession ",err);
+        console.error("error loading jiraSession ", err);
       });
   }
 
@@ -118,16 +119,16 @@ export class SessionComponent implements OnInit {
     this.pointer.save();
   }
 
-  clearLoadedJiras(){
+  clearLoadedJiras() {
     this.jiraIssues = new Array();
     this.jiraIssuesOn = true;
     this.jiraLinked = true;
     this.jiraService.loadQueries()
-    .then((res)=>{
-      if(res){
-        this.recentQueries = res;
-      }
-    })
+      .then((res) => {
+        if (res) {
+          this.recentQueries = res;
+        }
+      })
   }
 
   showJiraLinkForm() {
@@ -141,7 +142,7 @@ export class SessionComponent implements OnInit {
       this.currentJira = this.jiraIssues[id];
       this.currentJira.index = id;
       this.socket.next({ "event": "jira", "issue": { "description": this.currentJira.fields.description, "summary": this.currentJira.fields.summary } });
-    }else{
+    } else {
       this.error = "failed to find a jira issue at index " + id
       return;
     }
@@ -155,14 +156,18 @@ export class SessionComponent implements OnInit {
     this.activeLink = "pointing";
   }
 
+  resetCurrentJira(){
+    this.currentJira  = { "index": 0, "fields": {} };
+  }
+
   listJiraIssues() {
     this.jiraIssuesOn = true;
     this.activeLink = "issues";
+    this.resetCurrentJira();
 
   }
 
-  clearPointer($event:any){
-    console.log("clear");
+  clearPointer($event: any) {
     $event.stopPropagation();
     this.pointer.name = undefined;
     this.jira = false;
@@ -173,10 +178,9 @@ export class SessionComponent implements OnInit {
   }
 
   jiraQuery() {
-    console.log("this jql ", this.jiraQl);
     this.jiraSession.load()
       .then(auth => {
-        if(! auth){
+        if (!auth) {
           this.error = "failed to load session data. You may need to login to jira again";
           return
         }
@@ -185,20 +189,21 @@ export class SessionComponent implements OnInit {
             this.jiraIssues = resp.issues;
             this.jiraService.saveQuery(this.jiraQl);
             this.jiraService.loadQueries()
-            .then((q)=>{
-              this.recentQueries = q;
-            })
+              .then((q) => {
+                this.recentQueries = q;
+              })
           })
-      })
-      .catch(err => {
-        console.log("error listing", err);
-        this.jiraSession.del();
-        this.jiraLinked = false;
-      })
+          .catch(e => {
+            console.log("exception jiraQuery ", e);
+            this.error = e.message;
+            this.jiraSession.del();
+            this.jiraLinked = false;
+          });
+      });
   }
 
-  populateQuery(index ){
-    if(this.recentQueries[index]){
+  populateQuery(index) {
+    if (this.recentQueries[index]) {
       this.jiraQl = this.recentQueries[index];
       this.jiraLinked = true;
     }
@@ -234,20 +239,23 @@ export class SessionComponent implements OnInit {
               //error
             }
             this.jiraIssues.splice(this.currentJira.index, 1);
-
-          })
+            this.success = "Jira Updated.";
+            setTimeout(()=>{
+              this.success = null;
+            },1500);
+          });
       })
       .catch(err => {
         console.log("error updating", err);
         this.jiraSession.del();
         this.jiraLinked = false;
+        this.error = err.message || "failed to update Jira";
       })
   }
 
   handleMessageEvent(event: any) {
     let e = JSON.parse(event);
     if (e.event === "pointers") {
-      console.log("pointers",e.points);
       this.session.Pointers = []
       for (let i = 0; i < e.points.length; i++) {
         let p = new Pointer();

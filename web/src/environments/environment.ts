@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  apiHost: "http://localhost:3000",
-  wsHost: "ws://localhost:3000"
+  apiHost: "http://localhost:8080",
+  wsHost: "ws://localhost:8080"
 };
