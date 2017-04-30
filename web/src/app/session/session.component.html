@@ -8,20 +8,24 @@
   </div>
   <div class="col-md-7">
     <p class="text-right"> Welcome {{pointer.name}}  <a href="#" (click)="clearPointer($event)" > [clear]</a></p> 
-    <p class="text-right"> Copy the link in your browser and send it to other pointers</a></p> 
+    <p class="text-right"> Copy the link in your browser and send it to other pointers</p> 
   </div>
 </div>
-<div class="container well" *ngIf="pointer.name && !jira">
+<div class="container well" *ngIf="pointer.name">
   <ul class="nav nav-tabs">
-    <li role="presentation" class="active"><a (click)="jiraLinkCancel()">Pointing</a></li>
-    <li role="presentation"><a (click)="showJiraLinkForm()">Jira</a></li>
-    <li role="presentation"><a (click)="listJiraIssues()">Issues ({{jiraIssues.length}})</a></li>
+    <li role="presentation" [ngClass]="{'active':activeLink==='pointing'}"><a (click)="jiraLinkCancel()">Pointing</a></li>
+    <li role="presentation" [ngClass]="{'active':activeLink==='jira'}"><a (click)="showJiraLinkForm()">Jira</a></li>
+    <li role="presentation" [ngClass]="{'active':activeLink==='issues'}" ><a (click)="listJiraIssues($event)">Issues ({{jiraIssues.length}})</a></li>
   </ul>
+  <div *ngIf="!jira">
   <input *ngIf="!jiraLinked" type="text" value="{{currentJira.fields.summary}}" placeholder="Enter your story" class="form-control" />
   <p *ngIf="currentJira.fields.description">{{currentJira.fields.description}}</p>
+  <br/>
+  <p *ngIf="currentJira.self"><a href="{{jiraSession.host}}/browse/{{currentJira.key}}">Jira Link: {{currentJira.key}}</a></p>
   <input *ngIf="jiraLinked" [(ngModel)]="jiraQl" type="text" placeholder="Enter your JQL query" class="form-control" /><br>
   <div *ngIf="jiraIssuesOn" class="pull-right btn-group btn-group-sm" role="group">
     <button (click)="jiraQuery()" class="btn btn-primary" type="submit">Find Issues</button>
+  </div>
   </div>
 </div>
 <div class="container" *ngIf="pointer.name && !jira && !jiraIssuesOn">
@@ -113,26 +117,13 @@
       </div>
       <!-- List group -->
       <div class="list-group">
-         <button  *ngFor="let ji of jiraIssues;  let i = index" (click)="pointJiraIssue(i)" type="button" class="list-group-item">{{ji.fields.summary}}</button>
+         <button  *ngFor="let ji of jiraIssues;  let i = index" (click)="pointJiraIssue(i)" type="button" class="list-group-item">{{ji.key}} : {{ji.fields.summary}} </button>
       </div>
     </div>
   </div> 
 </div>
 <div *ngIf="pointer.name && jira" class="col-md-12">
   <div class="container">
-    <!--<form class="form well">
-      <h4 class="text-center">Link with sesion token </h4>
-      <label for="host">Jira Host:</label>
-      <input type="text" name="host" class="form-control" id="host" [(ngModel)]="jiraAuth.host">
-      <label for="session">Session Token:</label>
-      <input type="text" name="session" class="form-control" id="session" name="session"><br/>
-      <div class="pull-right btn-group btn-group-sm" role="group">
-        <button (click)="jiraLinkCancel()" class="btn btn-warning" type="submit">Cancel</button>
-        <button (click)="jiraLink()" class="btn btn-primary" type="submit">Link</button>
-      </div>
-      <br/>
-      <br/>
-    </form>-->
     <form class="form well">
       <h4 class="text-center">Link with credentials </h4>
       <p>Note the username and password are never stored. They are only used to generate a session token.</p>
