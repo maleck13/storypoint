@@ -2,8 +2,6 @@
   "apiVersion": "apps/v1beta1",
   "kind": "Deployment",
   "metadata": {
-    "creationTimestamp": null,
-    "generation": 1,
     "labels": {
       "run": "storypoints",
       "name": "storypoints"
