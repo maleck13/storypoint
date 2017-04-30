@@ -31,7 +31,7 @@ export class SessionComponent implements OnInit {
   private jiraIssues: any[] = new Array();
   public jiraIssuesOn = false;
   private activeLink: string = "pointing";
-  private currentJira: any = { "index": 0, "fields": {} };
+  private currentJira: any = { "index": 0, "fields": {} ,"self":"" };
   private error: string
   private recentQueries: string[] = new Array()
   private success = null;
@@ -160,7 +160,8 @@ export class SessionComponent implements OnInit {
     this.currentJira  = { "index": 0, "fields": {} };
   }
 
-  listJiraIssues() {
+  listJiraIssues($e) {
+    this.jira = false;
     this.jiraIssuesOn = true;
     this.activeLink = "issues";
     this.resetCurrentJira();
