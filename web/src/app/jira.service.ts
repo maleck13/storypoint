@@ -20,7 +20,10 @@ export class JiraService {
       })
       .catch(err => {
         console.log("authenticate error", err);
-        throw new Error(err.statusText)
+        if(err.status === 401){
+          throw new Error(err.status + " authentication failed");
+        }
+        throw new Error("unexpected response " + err.status);
       });
   }
   list(auth: JiraSession, session: string, query: string): Promise<any> {
