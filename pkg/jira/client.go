@@ -50,7 +50,7 @@ func (c Client) Authenticate(host, user, pass string) (*Auth, error) {
 		return nil, errors.Wrap(err, "failed to do authentication request")
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusUnauthorized {
+	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
 		return nil, ErrAuth{Message: "failed to authenticate "}
 	}
 	if resp.StatusCode != 200 {

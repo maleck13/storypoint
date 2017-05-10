@@ -231,7 +231,6 @@ export class SessionComponent implements OnInit {
   }
 
   jiraSave() {
-    console.log(this.choice);
     this.jiraSession.load()
       .then(auth => {
         this.jiraService.updateSP(auth, this.sessionID, this.currentJira.key, this.choice)

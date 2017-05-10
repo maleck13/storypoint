@@ -33,6 +33,10 @@ func main() {
 	router := web.Router()
 	logger := logrus.StandardLogger()
 	sesssionStore := session.NewStore()
+	//sys
+	{
+		web.SysRoute(router)
+	}
 	//session handler
 	{
 		sessionHandler := web.NewSessionHandler(logger, sesssionStore)
