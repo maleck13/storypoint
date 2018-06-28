@@ -1,4 +1,4 @@
-FROM golang:1.8.0-alpine
+FROM golang:1.10
 
 COPY ./dist /usr/src/app/dist
 COPY ./files /usr/src/app
