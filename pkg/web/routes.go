@@ -8,6 +8,15 @@ import (
 	"github.com/maleck13/storypoint/pkg/web/middleware"
 )
 
+//SysHandler struct
+type SysHandler struct {
+}
+
+//Version output
+func (s SysHandler) Version(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("1.0.0"))
+}
+
 // Router sets up the HTTP Router
 func Router() *mux.Router {
 	r := mux.NewRouter()
@@ -33,11 +42,13 @@ func SessionRoute(r *mux.Router, sessionHandler SessionHandler) {
 	r.HandleFunc("/sessions/count", sessionHandler.Active).Methods("GET")
 }
 
+//SysRoute Description
 func SysRoute(r *mux.Router) {
 	sys := SysHandler{}
 	r.HandleFunc("/sys/info/version", sys.Version)
 }
 
+// JiraRoute description
 func JiraRoute(r *mux.Router, jiraHandler JiraHandler) {
 	r.HandleFunc("/jira/authenticate", jiraHandler.Authenticate).Methods("POST")
 	r.HandleFunc("/jira/{sessionID}/items", jiraHandler.IssueList).Methods("POST")
