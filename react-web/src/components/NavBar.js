@@ -1,15 +1,17 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { Masthead } from 'patternfly-react';
+import logo from '../imgs/logo.png';
 
 class NavBar extends React.Component {
   render() {
     return( 
-      <div className="navbar navbar-default">
-        <div className="container-fluid">
-          <div className="navbar-header">
-            <Link to='/' className="navbar-brand"><p>Storypoint.me</p></Link>
-          </div>
-        </div>
+      <div>
+        <Masthead
+          titleImg={logo}
+          title="Storypoint.me"
+          navToggle={false}
+          href="/"
+        />
       </div>
     );
   }
