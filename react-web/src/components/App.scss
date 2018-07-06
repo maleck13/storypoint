@@ -1,10 +1,2 @@
-// Configure static paths for patternfly fonts and images
-$font-path: '~patternfly/dist/fonts/';
-$img-path: '~patternfly/dist/img/';
-$icon-font-path: '~patternfly/dist/fonts/';
-
-// Import Patternfly Saas
-@import 'patternfly';
-
-// Import Patternfly react specific Saas extensions
-@import 'patternfly-react';
+@import "../style/variables";
+@import "patternfly";
