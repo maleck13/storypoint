@@ -5,9 +5,10 @@
 2. Run `yarn start` or `npm run start` to start the web server
 3. Go to http://localhost:3000/
 
-# Making Changes
-The webpack-dev-server provides live reload when making changes to the HTML and JS files.
+# Development
+The webpack-dev-server provides live reload when making changes to the HTML, JS, and SASS files.
 
-When making changes to the Sass files, run `yarn build-css` or `npm run build-css` to rebuild the CSS file from Sass.
+run `npm run start`
 
-For allowing live reload on Sass files, run `yarn watch-css` or `npm run watch-css`.
+# Build
+run `npm run build`
