@@ -1,7 +1,8 @@
 import React from 'react';
+import { Button } from 'patternfly-react';
+
 import { PointSelector } from './PointSelector';
 import { PointerTable } from './PointerTable';
-import { Button } from 'patternfly-react';
 
 const POINTERS_EVENT = 'pointers';
 const SCORE_EVENT = 'score';

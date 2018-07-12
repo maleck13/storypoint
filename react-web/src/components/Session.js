@@ -2,8 +2,22 @@ import React from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
 
 import { StoryPointer } from './StoryPointer';
+import { InlineEdit } from './InlineEdit';
 
 export class Session extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      storyName: ''
+    };
+  }
+
+  updateStory() {
+    /// Handle update story here....
+  }
+
   render() {
     return( 
       <div className="session-container">
@@ -21,6 +35,7 @@ export class Session extends React.Component {
               </Nav>
               <TabContent>
                 <TabPane eventKey={1}>
+                  <InlineEdit label="Story:" value={this.state.storyName} placeholder="Enter your story here" save={this.updateStory}/>
                   <StoryPointer sessionId={this.props.sessionId} userName={this.props.userName}></StoryPointer>
                 </TabPane>
                 <TabPane eventKey={2}>
