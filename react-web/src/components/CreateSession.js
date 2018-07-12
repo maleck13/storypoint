@@ -13,7 +13,7 @@ export class CreateSession extends React.Component {
 
   render() {
     return( 
-      <div className="homepage">
+      <div className="create-session-container">
         <header className="text-center">
           <h1> Start a New Storypoint Session </h1>
         </header>
