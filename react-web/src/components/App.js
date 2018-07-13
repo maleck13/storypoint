@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import './App.css';
 
 import NavBar from './NavBar';
+import JiraLogin from './JiraLogin';
 import { CreateSession } from './CreateSession';
 import { Session } from './Session';
 
@@ -25,12 +26,16 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar />
-        <Switch>
-          {this.state.sessionId && <Redirect exact from='/' to={`/session/${this.state.sessionId}`} />}
-          <Route exact path="/" render={() => <CreateSession onSessionId={this.onSessionIdCreated} />} />
-          <Route exact path="/session/:id" component={Session} />
-          <Redirect to="/" />
-        </Switch>
+
+        <div className="Container">
+          <Switch>
+            {this.state.sessionId && <Redirect exact from='/' to={`/session/${this.state.sessionId}`} />}
+            <Route exact path="/" render={() => <CreateSession onSessionId={this.onSessionIdCreated} />} />
+            <Route exact path="/jira" component={JiraLogin} />
+            <Route exact path="/session/:id" component={Session} />
+            <Redirect to="/" />
+          </Switch>
+        </div>
       </div>
     );
   }
