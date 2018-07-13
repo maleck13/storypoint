@@ -2,6 +2,7 @@ import React from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
 
 import { StoryPointer } from './StoryPointer';
+import { JiraLogin } from './JiraLogin';
 
 export class Session extends React.Component {
   render() {
@@ -24,7 +25,7 @@ export class Session extends React.Component {
                   <StoryPointer sessionId={this.props.sessionId} userName={this.props.userName}></StoryPointer>
                 </TabPane>
                 <TabPane eventKey={2}>
-                {/* JIRA Content */}
+                  <JiraLogin />
                 </TabPane>
                 <TabPane eventKey={3}>
                 {/* Issues Content */}
