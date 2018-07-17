@@ -7,7 +7,7 @@ export class CreateSession extends React.Component {
     fetch(process.env.REACT_APP_API_HOST + "/session")
       .then(res => res.json())
       .then(response => {
-        this.props.onSessionId({sessionId: response.id, userName: userName});
+        this.props.onSessionCreated({sessionId: response.id, userName: userName});
       });
   };
 

@@ -1,0 +1,20 @@
+.storypointer {
+  position: relative;
+  width: 596px;
+
+  .pointselector {
+    display: inline-block;
+  }
+
+  .table-container {
+    display: inline-block;
+
+    .pointertable {
+      width: 298px;
+
+      table {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
