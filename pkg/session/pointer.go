@@ -94,6 +94,7 @@ var (
 	newline = []byte{'\n'}
 	space   = []byte{' '}
 	score   = []byte(`score`)
+	clear   = []byte(`clear`)
 )
 
 func (p *Pointer) Read(w *sync.WaitGroup) {
@@ -136,6 +137,8 @@ func (p *Pointer) Read(w *sync.WaitGroup) {
 					fmt.Println(err)
 				}
 			}
+		} else if bytes.Contains(message, clear) {
+			p.pointingSession.ClearPoints()
 		}
 		p.pointingSession.BroadCast <- message
 	}

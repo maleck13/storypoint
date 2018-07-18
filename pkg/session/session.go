@@ -92,6 +92,15 @@ func (ps *PointingSession) removePointer(p *Pointer) {
 	delete(ps.Pointers, p)
 }
 
+// ClearPoints resets any scores to empty
+func (ps *PointingSession) ClearPoints() {
+	ps.Lock()
+	defer ps.Unlock()
+	for p := range ps.Pointers {
+		p.Score = ""
+	}
+}
+
 func (ps *PointingSession) broadCastPoints() {
 	pointers := []map[string]string{}
 	for k := range ps.Pointers {
