@@ -18,11 +18,9 @@ class App extends Component {
       sessionId: null,
       [USERNAME_STORAGE_KEY]: null
     };
-
-    this.onSessionStarted = this.onSessionStarted.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.setState({
       [USERNAME_STORAGE_KEY]: this.getStoredUserName()
     });
@@ -33,30 +31,37 @@ class App extends Component {
     this.setState(sessionDetails);
   };
 
-  storeUserName(userName) {
+  storeUserName = userName => {
     window.sessionStorage.setItem(USERNAME_STORAGE_KEY, userName);
   }
 
-  getStoredUserName() {
+  getStoredUserName = () => {
     return window.sessionStorage.getItem(USERNAME_STORAGE_KEY);
   }
 
-  render() {
+  render = () => {
     const {sessionId, userName} = this.state;
 
     return (
       <div className="App">
         <NavBar />
         <Switch>
-          {sessionId && <Redirect exact from='/' to={`/session/${sessionId}`} />}
-          <Route exact path="/" render={() => <CreateSession onSessionCreated={this.onSessionStarted} />} />
-          <Route exact path="/session/:id" render={props => {
-            if (!userName) {
-              return <JoinSession sessionId={props.match.params.id} onSessionJoined={this.onSessionStarted}></JoinSession>
-            } else {
-              return <Session sessionId={props.match.params.id} userName={this.state.userName}/>}
+          <Route exact path="/" render={() => {
+              if (!sessionId) {
+                return <CreateSession onSessionCreated={this.onSessionStarted} />
+              } else if (sessionId) {
+                return <Redirect exact to={`/session/${sessionId}`} />
+              }
             }
           }/>
+          <Route exact path="/session/:id" render={routeData => {
+            if (!userName) {
+              return <JoinSession sessionId={routeData.match.params.id} onSessionJoined={this.onSessionStarted}></JoinSession>
+            } else {
+              return <Session sessionId={routeData.match.params.id} userName={this.state.userName}/>}
+            }
+          }/>
+          {/* Default redirect */}
           <Redirect to="/" />
         </Switch>
       </div>
