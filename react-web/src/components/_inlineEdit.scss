@@ -1,4 +1,9 @@
-.inline-edit-container {
-  padding-top: 25px;
-  padding-bottom: 25px;
+.form-control-pf-value {
+  flex: 1;
+  box-shadow: none;
+  white-space: normal;
+}
+
+.form-control-pf-empty {
+  box-shadow: none;
 }

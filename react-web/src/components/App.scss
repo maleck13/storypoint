@@ -1,8 +1,10 @@
 @import "../style/variables";
 @import "patternfly";
 
-@import "_createSession";
-@import "_session";
 @import "_pointselector";
-@import "_storypointer";
 @import "_inlineEdit";
+
+.row {
+  padding-top: $padding-large-vertical;
+  padding-bottom: $padding-large-vertical;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'patternfly-react';
+import { Button, Col, Grid, Row } from 'patternfly-react';
 
 import { PointSelector } from './PointSelector';
 import { PointerTable } from './PointerTable';
@@ -135,16 +135,20 @@ export class StoryPointer extends React.Component {
 
   render() {
     return( 
-      <div className="storypointer">
-        <PointSelector onPointSelected={this.pointSelected}></PointSelector>
-        <div className="table-container">
-          <PointerTable pointers={this.state.pointers}></PointerTable>
-          <div className="pull-right">
-            <Button onClick={this.showPoints} bsStyle="primary">Show</Button>
-            <Button onClick={this.clearPoints}>Clear</Button>
-          </div>
-        </div>
-      </div>
+      <Grid>
+        <Row>
+          <Col xs={6} md={5}>
+            <PointSelector onPointSelected={this.pointSelected}></PointSelector>
+          </Col>
+          <Col xs={6} md={7}>
+            <PointerTable pointers={this.state.pointers}></PointerTable>
+            <div className="pull-right">
+              <Button onClick={this.showPoints} bsStyle="primary">Show</Button>
+              <Button onClick={this.clearPoints}>Clear</Button>
+            </div>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }
