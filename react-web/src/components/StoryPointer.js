@@ -64,6 +64,22 @@ export class StoryPointer extends React.Component {
     this.socket.close();
   }
 
+  calculateAverage(pointers) {
+    let total = 0;
+    let validScores = pointers.length - 1;
+
+    for(let i = 0; i < pointers.length - 1; i++) {
+      const score = pointers[i].score;
+      if (score && score !== "?") {
+        total += parseInt(score, 10);
+      } else {
+        validScores--;
+      }
+    }
+    
+    pointers[pointers.length - 1].score = Math.round(total / validScores);
+  }
+
   createUpdatedStoryPoints(data) {
     let pointerIndex = this.state.pointers.findIndex(pointer => pointer.name === data.name);
     const result = [...this.state.pointers];
@@ -75,6 +91,7 @@ export class StoryPointer extends React.Component {
         show: pointer.show
       };
     }
+
     return result;
   }
 
@@ -92,10 +109,13 @@ export class StoryPointer extends React.Component {
     let pointers = [];
     if (isNewPointerJoined(data)) {
       pointers = data.points;
+      pointers.push({'name': 'Average Points'});
+      this.calculateAverage(pointers);
     }
 
     if (isScoreUpdated(data)) {
       pointers = this.createUpdatedStoryPoints(data);
+      this.calculateAverage(pointers);
     }
 
     if (isShowPoints(data)) {
