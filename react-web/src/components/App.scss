@@ -1,8 +1,8 @@
 @import "../style/variables";
 @import "patternfly";
 
-@import "_pointselector";
-@import "_inlineEdit";
+@import "_storypointer";
+@import "_storyinput";
 
 .row {
   padding-top: $padding-large-vertical;

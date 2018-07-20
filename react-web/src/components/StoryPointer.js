@@ -134,21 +134,17 @@ export class StoryPointer extends React.Component {
   }
 
   render() {
-    return( 
-      <Grid>
-        <Row>
-          <Col xs={6} md={5}>
-            <PointSelector onPointSelected={this.pointSelected}></PointSelector>
-          </Col>
-          <Col xs={6} md={7}>
-            <PointerTable pointers={this.state.pointers}></PointerTable>
-            <div className="pull-right">
-              <Button onClick={this.showPoints} bsStyle="primary">Show</Button>
-              <Button onClick={this.clearPoints}>Clear</Button>
-            </div>
-          </Col>
-        </Row>
-      </Grid>
+    return(
+      <div className="storypointer-container">
+        <PointSelector onPointSelected={this.pointSelected}></PointSelector>
+        <div className="table-container pull-right">
+          <PointerTable pointers={this.state.pointers}></PointerTable>
+          <div className="pull-right">
+            <Button onClick={this.showPoints} bsStyle="primary">Show</Button>
+            <Button onClick={this.clearPoints}>Clear</Button>
+          </div>
+        </div>
+      </div>
     );
   }
 }
