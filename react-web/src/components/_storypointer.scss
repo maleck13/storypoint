@@ -1,20 +1,19 @@
-.storypointer {
-  position: relative;
-  width: 596px;
-
+.storypointer-container {
   .pointselector {
     display: inline-block;
+    
+    .btn-group {
+      margin-bottom: 2px;
+    }
+  
+    button.btn {
+      border-radius: 4px;
+      width: 100px;
+    }
   }
 
   .table-container {
     display: inline-block;
-
-    .pointertable {
-      width: 298px;
-
-      table {
-        margin-bottom: 0;
-      }
-    }
+    width: 300px;
   }
 }

@@ -1,0 +1,46 @@
+$story-input-height: 40px !default;
+$story-input-radius: 5px !default;
+$story-input-line-height: 1.66667 !default;
+
+// Name space this to storyinput
+.inline-edit-container.form-control-pf-editable {
+    .form-control-pf-value {
+        flex: 1;
+        box-shadow: none;
+        white-space: normal;
+        border-color: $input-border;
+        border-radius: $story-input-radius;
+        min-height: $story-input-height;
+        line-height: $story-input-line-height;
+        margin: 0px;
+        padding-right: 30px;
+
+        span.placeholder {
+            font-style: italic;
+            color: $placeholder-color;
+        }
+
+        .glyphicon-pencil {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0;
+            float: right;
+            padding-right: 10px;
+        }
+    }
+
+    .form-control-pf-textbox {
+        input {
+            min-height: $story-input-height;
+            border-radius: $story-input-radius;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: $story-input-line-height;
+        }
+    }
+
+    .form-control-pf-empty {
+        box-shadow: none;
+    }
+}
