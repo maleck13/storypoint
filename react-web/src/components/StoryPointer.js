@@ -35,7 +35,8 @@ export class StoryPointer extends React.Component {
     super(props);
 
     this.state = {
-      pointers: []
+      pointers: [],
+      showPoints: false
     };
 
     this.pointSelected = this.pointSelected.bind(this);
@@ -64,22 +65,6 @@ export class StoryPointer extends React.Component {
     this.socket.close();
   }
 
-  calculateAverage(pointers) {
-    let total = 0;
-    let validScores = pointers.length - 1;
-
-    for(let i = 0; i < pointers.length - 1; i++) {
-      const score = pointers[i].score;
-      if (score && score !== "?") {
-        total += parseInt(score, 10);
-      } else {
-        validScores--;
-      }
-    }
-    
-    pointers[pointers.length - 1].score = Math.round(total / validScores);
-  }
-
   createUpdatedStoryPoints(data) {
     let pointerIndex = this.state.pointers.findIndex(pointer => pointer.name === data.name);
     const result = [...this.state.pointers];
@@ -95,12 +80,8 @@ export class StoryPointer extends React.Component {
     return result;
   }
 
-  createPointersAsShowing() {
-    return this.state.pointers.map(pointer => Object.assign({}, pointer, {show: true}));
-  }
-
   createClearedPointers() {
-    return this.state.pointers.map(pointer => Object.assign({}, pointer, {score: '', show: false}));
+    return this.state.pointers.map(pointer => Object.assign({}, pointer, {score: ''}));
   }
 
   onMessage(evt) {
@@ -108,21 +89,21 @@ export class StoryPointer extends React.Component {
 
     let pointers = [];
     if (isNewPointerJoined(data)) {
+      this.setState({showPoints: false})
       pointers = data.points;
-      pointers.push({'name': 'Average Points'});
-      this.calculateAverage(pointers);
     }
 
     if (isScoreUpdated(data)) {
       pointers = this.createUpdatedStoryPoints(data);
-      this.calculateAverage(pointers);
     }
 
     if (isShowPoints(data)) {
-      pointers = this.createPointersAsShowing();
+      this.setState({showPoints: true});
+      pointers = this.state.pointers;
     }
 
     if (isClearPoints(data)) {
+      this.setState({showPoints: false});
       pointers = this.createClearedPointers();
     }
 
@@ -158,7 +139,7 @@ export class StoryPointer extends React.Component {
       <div className="storypointer-container">
         <PointSelector onPointSelected={this.pointSelected}></PointSelector>
         <div className="table-container pull-right">
-          <PointerTable pointers={this.state.pointers}></PointerTable>
+          <PointerTable pointers={this.state.pointers} showPoints={this.state.showPoints}></PointerTable>
           <div className="pull-right">
             <Button onClick={this.showPoints} bsStyle="primary">Show</Button>
             <Button onClick={this.clearPoints}>Clear</Button>
