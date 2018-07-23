@@ -35,7 +35,8 @@ export class StoryPointer extends React.Component {
     super(props);
 
     this.state = {
-      pointers: []
+      pointers: [],
+      showPoints: false
     };
 
     this.pointSelected = this.pointSelected.bind(this);
@@ -75,15 +76,12 @@ export class StoryPointer extends React.Component {
         show: pointer.show
       };
     }
+
     return result;
   }
 
-  createPointersAsShowing() {
-    return this.state.pointers.map(pointer => Object.assign({}, pointer, {show: true}));
-  }
-
   createClearedPointers() {
-    return this.state.pointers.map(pointer => Object.assign({}, pointer, {score: '', show: false}));
+    return this.state.pointers.map(pointer => Object.assign({}, pointer, {score: ''}));
   }
 
   onMessage(evt) {
@@ -91,6 +89,7 @@ export class StoryPointer extends React.Component {
 
     let pointers = [];
     if (isNewPointerJoined(data)) {
+      this.setState({showPoints: false})
       pointers = data.points;
     }
 
@@ -99,10 +98,12 @@ export class StoryPointer extends React.Component {
     }
 
     if (isShowPoints(data)) {
-      pointers = this.createPointersAsShowing();
+      this.setState({showPoints: true});
+      pointers = this.state.pointers;
     }
 
     if (isClearPoints(data)) {
+      this.setState({showPoints: false});
       pointers = this.createClearedPointers();
     }
 
@@ -138,7 +139,7 @@ export class StoryPointer extends React.Component {
       <div className="storypointer-container">
         <PointSelector onPointSelected={this.pointSelected}></PointSelector>
         <div className="table-container pull-right">
-          <PointerTable pointers={this.state.pointers}></PointerTable>
+          <PointerTable pointers={this.state.pointers} showPoints={this.state.showPoints}></PointerTable>
           <div className="pull-right">
             <Button onClick={this.showPoints} bsStyle="primary">Show</Button>
             <Button onClick={this.clearPoints}>Clear</Button>

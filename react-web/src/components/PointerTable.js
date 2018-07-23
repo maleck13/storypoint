@@ -50,6 +50,19 @@ export class PointerTable extends React.Component {
     }
   }
 
+  calculateAverage(pointers) {
+    let validScores = 0;
+    const validPointerScore = pointer => pointer.score && pointer.score !== '?';
+
+    const total = pointers.filter(validPointerScore)
+      .reduce((total, pointer) => {
+        validScores++;
+        return total += parseInt(pointer.score, 10);
+      }, 0)
+    
+    return Math.round(total/validScores);
+  }
+
   render() {
     return( 
       <div className="pointertable">
@@ -60,7 +73,7 @@ export class PointerTable extends React.Component {
           columns={this.pointerTableColumns}
         >
           <Table.Header />
-          <Table.Body rows={this.props.pointers} rowKey="name" />
+          <Table.Body rows={[...this.props.pointers, {name: 'Average Points', score: this.calculateAverage(this.props.pointers)}].map(pointer => ({...pointer, show: this.props.showPoints}))} rowKey="name" />
         </Table.PfProvider>
       </div>
     );
